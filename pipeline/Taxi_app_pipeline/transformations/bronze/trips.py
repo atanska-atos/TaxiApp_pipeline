@@ -8,7 +8,7 @@ source_data = "s3://cabapp-at1/data-store/trips"
 schema = StructType ([
     StructField("Trip_Id", StringType(), False),
     StructField("Date", DateType(), True),
-    StructField("City_Id", IntegerType(), True),
+    StructField("City_Id", StringType(), True),
     StructField("Passenger_Type", StringType(), True),
     StructField("Distance_Travelled", IntegerType(), True),
     StructField("Fare_Amount", IntegerType(), True),
@@ -23,5 +23,5 @@ schema = StructType ([
 @dp.expect("valid_Passenger_Rating", "Passenger_Rating >= 1 AND Passenger_Rating <= 10")
 @dp.expect("valid_Driver_Rating", "Driver_Rating >= 1 AND Driver_Rating <= 10")
 def trips():
-    df = spark.readStream.schema(schema).format("csv").option("header", "true").load(source_data)
+    df = spark.readStream.schema(schema).format("cloudFiles").option("header", "true").option("cloudFiles.format", "csv").load(source_data)
     return df
