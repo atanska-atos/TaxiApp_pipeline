@@ -5,7 +5,7 @@ table_name = "transportation_app.bronze.trips"
 city_table = "transportation_app.bronze.city"
 
 @dp.table(
-    name = "transportation_app.silver.Kochi_trip",
+    name = "transportation_app.silver.Trips",
     comment="Created from bronze table"
 )
 @dp.expect_all_or_drop({
@@ -14,8 +14,8 @@ city_table = "transportation_app.bronze.city"
     "valid_fare": "Fare_Amount > 0",
     "valid_rating": "Passenger_Rating > 0",
     "valid_driver_rating": "Driver_Rating > 0"})
-def kochi_all_data():
+def trip_data():
     city_df = spark.read.table(city_table)
     trips_df = spark.read.table(table_name)
-    df = trips_df.join(city_df, trips_df.City_Id == city_df.City_Id).where(col("City_Name") == "Kochi").select("Trip_Id","Date","Passenger_Type","Distance_Travelled","Fare_Amount","Passenger_Rating","Driver_Rating")
+    df = trips_df.join(city_df, trips_df.City_Id == city_df.City_Id).select("Trip_Id","City_Name","Date","Passenger_Type","Distance_Travelled","Fare_Amount","Passenger_Rating","Driver_Rating")
     return df
